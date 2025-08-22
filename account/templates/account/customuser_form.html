@@ -1,0 +1,61 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block title %}{{ request.user.username }}-profile-update{% endblock %}
+
+{% block content %}
+    <!-- Profile Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="profile-card">
+                        <div class="profile-header text-center">
+                            <div class="profile-image-container">
+                                {% if request.user.image_profile %}
+                                    <img src="{{ request.user.image_profile.url }}"
+                                         alt="Profile" class="profile-image" id="currentProfileImage">
+                                {% else %}
+                                    <img src="{% static 'image/default.png' %}"
+                                         alt="Profile" class="profile-image" id="currentProfileImage">
+                                {% endif %}
+                                <div class="profile-image-overlay">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                            </div>
+                            <h3 class="profile-name">{{ request.user.username }}</h3>
+                        </div>
+
+                        <form id="profileForm" class="profile-form" enctype="multipart/form-data" method="post" action="{% url 'account:profile_update' %}">
+                            {% csrf_token %}
+                            <div class="row">
+                                {% for field in form %}
+                                    <div class="col-md-6 mb-3">
+                                        <label for="{{ field.id_for_label }}" class="form-label">{{ field.label }}</label>
+                                        <div class="input-group">
+                                            {{ field }}
+                                        </div>
+                                        {% if field.errors %}
+                                            {% for error in field.errors %}
+                                                <div class="my-3 alert alert-danger">{{ error }}</div>
+                                            {% endfor %}
+                                        {% endif %}
+                                    </div>
+                                {% endfor %}
+                                <div class="text-center">
+                                    <button id="test" type="submit" class="btn btn-primary btn-lg">
+                                        <i class="fas fa-save me-2"></i>Update Profile
+                                    </button>
+                                    <a href="{% url 'account:profile' %}" class="btn btn-secondary btn-lg">
+                                        Back to Profile
+                                    </a>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

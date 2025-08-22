@@ -1,0 +1,86 @@
+.comments-section {
+  background: rgba(255, 255, 255, 0.9);
+  border-radius: var(--border-radius);
+  padding: 2rem;
+  box-shadow: var(--shadow-medium);
+  backdrop-filter: blur(8px);
+  margin-top: 3rem;
+}
+
+.comments-section h5 {
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin-bottom: 1.5rem;
+  color: var(--dark-color);
+}
+
+.comment {
+  margin-bottom: 1.5rem;
+  padding: 1rem 1.5rem;
+  border-left: 4px solid var(--primary-color);
+  border-radius: 0 var(--border-radius) var(--border-radius) 0;
+  background: rgba(245, 247, 250, 0.85);
+  animation: fadeIn 0.4s ease-in-out;
+}
+
+.comment.reply {
+  margin-left: 2rem;
+  border-left-color: var(--secondary-color);
+  background: rgba(240, 242, 255, 0.7);
+}
+
+.comment-header {
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  font-size: 0.95rem;
+  color: var(--secondary-color);
+}
+
+.comment-body {
+  margin-bottom: 0.75rem;
+  font-size: 1rem;
+  line-height: 1.6;
+  color: var(--dark-color);
+}
+
+.comment-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.comment-actions .btn {
+  font-size: 0.8rem;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.replies {
+  margin-top: 1rem;
+  padding-left: 1rem;
+  border-left: 2px dashed rgba(0, 0, 0, 0.1);
+}
+
+.add-comment textarea {
+  resize: none;
+  border-radius: var(--border-radius);
+  transition: var(--transition);
+}
+
+.add-comment textarea:focus {
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 0.2rem rgba(0, 123, 255, 0.2);
+}
+
+.add-comment button {
+  margin-top: 0.5rem;
+  align-self: flex-end;
+  font-size: 0.9rem;
+  border-radius: 20px;
+}
+.comments-section {
+  width: 100%;
+  display: block;
+  float: none;
+  clear: both;
+  margin-top: 2rem;
+}

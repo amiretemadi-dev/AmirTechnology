@@ -1,0 +1,195 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}{{ post.title }}-post{% endblock %}
+
+{% block additional_header_tags %}
+    <meta property="og:title" content="{{ post.title }}">
+    <meta property="og:description" content="{{ post.summary|truncatewords:20 }}">
+    {% if post.image %}
+        <meta property="og:image" content="https://{{ request.get_host }}{{ post.image.url }}">
+    {% endif %}
+    <meta property="og:url" content="https://{{ request.get_host }}{{ request.get_full_path }}">
+    <meta property="og:type" content="article">
+{% endblock %}
+
+{% block nav %}
+    {% include 'includes/navbar.html' %}
+{% endblock %}
+
+{% block content %}
+    <section class="py-5 mt-5">
+        <div class="container">
+            <div class="row">
+
+                <!-- Main content -->
+                <div class="col-lg-8">
+                    <article class="post-detail">
+                        <div class="post-header">
+                            <span class="post-category-badge">{{ post.main_topic }}</span>
+                            <h1 class="post-title">{{ post.title }}</h1>
+                            <div class="post-meta">
+                                <span><i class="fas fa-calendar me-1"></i>{{ post.short_date }}</span>
+                                <span><i class="fas fa-user me-1"></i>{{ post.author.username }}</span>
+                                <span><i class="fas fa-clock me-1"></i>{{ post.read_time }} min read</span>
+                            </div>
+                        </div>
+
+                        <div class="post-image-container">
+                            {% if post.image %}
+                                <img src="{{ post.image.url }}"
+                                     alt="{{ post.title }}" class="post-main-image">
+                            {% else %}
+                                <img src="{% static 'image/default.png' %}"
+                                     alt="{{ post.title }}" class="post-main-image">
+                            {% endif %}
+                        </div>
+
+                        <div class="post-content">
+                            {{ post.body|safe }}
+                        </div>
+
+                        <!-- Post Actions -->
+                        <div class="post-actions">
+                            <div class="action-buttons">
+                                <button onclick="like('{{ post.slug }}', '{{ csrf_token }}')"
+                                        class="btn btn-outline-danger like-btn {% if is_liked %}liked{% endif %}"
+                                        id="likeBtn">
+                                    <i class="{% if is_liked %}fas{% else %}far{% endif %} fa-heart" id="likeIcon"></i>
+                                    <span id="likeCount">{{ post.likes.count }}</span>
+                                </button>
+                                <div class="share-section">
+                                    <h6>Share this post:</h6>
+                                    <div class="share-url">
+                                        <input
+                                                type="text"
+                                                class="form-control"
+                                                id="shareUrl"
+                                                value="{{ request.build_absolute_uri }}"
+                                                readonly
+                                        />
+                                        <button class="btn btn-outline-primary" id="copyBtn">
+                                            <i class="fas fa-copy"></i>
+                                        </button>
+                                    </div>
+                                    <div class="social-share mt-3">
+                                        <a href="#" class="social-share-btn twitter"
+                                        ><i class="fab fa-x"></i
+                                        ></a>
+                                        <a target="_blank"
+                                           href="https://t.me/share/url?url={{ request.build_absolute_uri|urlencode }}&text={{ post.title|urlencode }} - {{ post.summary|default:post.body|truncatewords:20|urlencode }}"
+                                           class="social-share-btn telegram"
+                                        ><i class="fab fa-telegram"></i
+                                        ></a>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </article>
+
+                    <!-- Comments Section -->
+                    <div class="comments-section mt-5">
+                        <h5 class="mb-4">Comments</h5>
+
+                        {% if post.comments.exists %}
+                            {% for comment in post.comments.all %}
+                                {% if not comment.parent_id %}
+                                    <div class="comment" data-id="{{ comment.id }}"
+                                         id="comment-{{ comment.id }}" data-username="{{ comment.author.username }}"
+                                         data-username="{{ comment.author.username }}">
+                                        <div class="comment-header">
+                                            <strong>{{ comment.author.username }}</strong>
+                                            <span class="text-muted">· {{ comment.created_at|timesince }} ago</span>
+                                        </div>
+                                        <div class="comment-body">
+                                            {{ comment.content }}
+                                        </div>
+                                        <div class="comment-actions">
+                                            <button class="btn btn-sm btn-outline-primary reply-btn">Reply</button>
+                                        </div>
+
+                                        <div class="replies">
+                                            {% if comment.replies.exists %}
+                                                {% for reply in comment.replies.all %}
+                                                    <div class="comment reply" data-id="{{ reply.id }}"
+                                                         data-username="{{ reply.author.username }}"
+                                                         id="comment-{{ reply.id }}">
+                                                        <div class="comment-header">
+                                                            <strong>{{ reply.author.username }}</strong>
+                                                            <span class="text-muted">· {{ reply.created_at|timesince }} ago</span>
+                                                        </div>
+                                                        <div class="comment-body">
+                                                            {{ reply.content }}
+                                                        </div>
+                                                    </div>
+                                                {% endfor %}
+                                            {% endif %}
+                                        </div>
+                                    </div>
+                                {% endif %}
+                            {% endfor %}
+                        {% else %}
+                            <p>No comments yet. Be the first to comment!</p>
+                        {% endif %}
+
+                        <!-- Add Comment Form -->
+                        <div class="add-comment mt-4">
+                            <input type="hidden" id="parentId" value="">
+                            <textarea id="commentText" class="form-control mb-2" rows="3"
+                                      placeholder="Write a comment..."></textarea>
+                            <button id="postCommentBtn" type="button" data-slug="{{ post.slug }}"
+                                    data-token="{{ csrf_token }}" class="btn btn-primary">
+                                Post Comment
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Sidebar -->
+                <div class="col-lg-4">
+                    <div class="sidebar">
+                        <div class="sidebar-widget">
+                            <h5 class="widget-title">Related Posts</h5>
+                            <div class="related-posts">
+                                {% if related_post %}
+                                    {% for post in related_post %}
+                                        <div class="related-post">
+                                            {% if post.image %}
+                                                <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                                            {% else %}
+                                                <img src="{% static 'image/default.png' %}" alt="{{ post.title }}">
+                                            {% endif %}
+                                            <div class="related-content">
+                                                <h6><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h6>
+                                                <small>{{ post.short_date }}</small>
+                                            </div>
+                                        </div>
+                                    {% endfor %}
+                                {% else %}
+                                    <p>there is no related post for this post</p>
+                                {% endif %}
+                            </div>
+                        </div>
+
+                        <div class="sidebar-widget">
+                            <h5 class="widget-title">Categories</h5>
+                            {% if categories %}
+                                <ul class="category-list">
+                                    {% for category in categories %}
+                                        <li>
+                                            <a href="{% url 'post:list' %}?category_slug={{ category.slug }}">
+                                                {{ category.name }}
+                                                <span>({{ category.num_posts }})</span>
+                                            </a>
+                                        </li>
+                                    {% endfor %}
+                                </ul>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div> <!-- /col-lg-4 -->
+
+            </div> <!-- /row -->
+        </div> <!-- /container -->
+    </section>
+
+{% endblock %}

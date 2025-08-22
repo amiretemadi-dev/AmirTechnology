@@ -1,0 +1,98 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    Amir-Tec
+{% endblock %}
+
+{% block nav %}
+    {% include 'includes/navbar.html' %}
+{% endblock %}
+
+{% block content %}
+    <section class="hero-section">
+        <div class="hero-bg"></div>
+        <div class="container text-center">
+            <div class="hero-content">
+                <h1 class="hero-title">Welcome to Amir-Tec</h1>
+                <p class="hero-subtitle">Your Hub for Technology & Programming</p>
+                <a href="{% url 'post:list' %}" class="btn btn-primary btn-lg hero-btn">
+                    <i class="fas fa-rocket me-2"></i>Explore Posts
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Recent Posts -->
+    <section class="py-5 recent-posts">
+        <div class="container">
+            <h2 class="section-title text-center mb-5">Recent Posts</h2>
+            <div class="row">
+                {% for post in random_posts %}
+                <div class="col-lg-4 col-md-6 mb-4">
+                    <div class="post-card">
+                        <div class="post-image">
+                            {% if post.image %}
+                            <img src="{{ post.image.url }}"
+                                 alt="{{ post.title }}">
+                            {% else %}
+                            <img src="{% static 'image/default.png' %}"
+                                 alt="{{ post.title }}">
+                            {% endif %}
+                            <div class="post-overlay">
+                                <span class="post-category">{{ post.main_topic }}</span>
+                            </div>
+                        </div>
+                        <div class="post-content">
+                            <h5 class="post-title">{{ post.title }}</h5>
+                            <p class="post-excerpt">{{ post.summary }}</p>
+                            <div class="post-meta">
+                                <span><i class="fas fa-calendar me-1"></i>{{ post.short_date }}</span>
+                                <span><i class="fas fa-user me-1"></i>{{ post.author.username }}</span>
+                            </div>
+                            <a href="{{ post.get_absolute_url }}" class="btn btn-outline-primary btn-sm">Read More</a>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section class="py-5 about-section">
+        <div class="container text-center">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <h2 class="section-title mb-4">About Amir-Tec</h2>
+                    <p class="lead">Amir-Tec is your go-to source for the latest in technology and programming. We
+                        explore
+                        cutting-edge trends, provide in-depth tutorials, and foster a community of tech enthusiasts
+                        passionate about innovation.</p>
+                    <div class="stats-row mt-5">
+                        <div class="row">
+                            <div class="col-md-4">
+                                <div class="stat-item">
+                                    <h3>500+</h3>
+                                    <p>Articles Published</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-item">
+                                    <h3>10K+</h3>
+                                    <p>Active Readers</p>
+                                </div>
+                            </div>
+                            <div class="col-md-4">
+                                <div class="stat-item">
+                                    <h3>50+</h3>
+                                    <p>Tech Topics</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}

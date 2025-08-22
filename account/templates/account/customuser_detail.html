@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% load static %}
+
+
+{% block content %}
+    <!-- Profile Content -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row justify-content-center">
+                <div class="col-lg-8">
+                    <div class="profile-card">
+                        <div class="profile-header text-center">
+                            <div class="profile-image-container">
+                                {% if object.image_profile %}
+                                    <img src="{{ object.image_profile.url }}"
+                                        alt="Profile" class="profile-image" id="currentProfileImage">
+                                {% else %}
+                                <img src="{% static 'image/default.png' %}"
+                                        alt="Profile" class="profile-image" id="currentProfileImage">
+                                {% endif %}
+                                <div class="profile-image-overlay">
+                                    <i class="fas fa-camera"></i>
+                                </div>
+                            </div>
+                            <h3 class="profile-name">{{ object.username }}</h3>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-6 mb-3 d-flex">
+                                <h3 style="margin-right: 10px">First Name:</h3>
+                                <h3>{{ object.first_name|default:'empty' }}</h3>
+                            </div>
+                            <div class="col-md-6 mb-3 d-flex">
+                                <h3 style="margin-right: 10px">Last Name:</h3>
+                                <h3>{{ object.last_name|default:'empty' }}</h3>
+                            </div>
+                        </div>
+                        <hr>
+                        <div class="mb-3">
+                            <h3>Bio:</h3>
+                            <p class="text text-muted mx-5">{{ object.bio|default:'you do not have bio' }}</p>
+                        </div>
+
+                        <div class="text-center">
+                            <a href="{% url 'account:profile_update' %}"
+                               class="btn btn-primary btn-lg">
+                                <i class="fas fa-save me-2"></i>Update Profile
+                            </a>
+                            <a href="{% url 'home:index' %}" class="btn btn-secondary btn-lg">
+                                        Back to home
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block title %}{{ request.user.username }}-profile{% endblock %}

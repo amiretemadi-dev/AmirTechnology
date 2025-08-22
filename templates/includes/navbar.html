@@ -1,0 +1,52 @@
+{% load static %}
+<nav class="navbar navbar-expand-lg fixed-top custom-navbar">
+    <div class="container">
+        <a class="navbar-brand" href="index.html">
+            <i class="fas fa-microchip me-2"></i>Amir-Tec
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav me-auto">
+                <li class="nav-item"><a
+                        class="nav-link{% if request.resolver_match.url_name == 'index' and request.resolver_match.app_name == 'home' %} active{% endif %}"
+                        href="{% url 'home:index' %}">Home</a></li>
+                <li class="nav-item"><a class="nav-link{% if request.resolver_match.url_name == 'list' and request.resolver_match.app_name == 'post' %} active{% endif %}" href="{% url 'post:list' %}">Posts</a></li>
+                <li class="nav-item"><a class="nav-link{% if request.resolver_match.url_name == 'contact-us' and request.resolver_match.app_name == 'post' %} active{% endif %}" href="{% url 'post:contact_us' %}">Contact Us</a></li>
+                {% if not request.user.is_authenticated %}
+                    <li class="nav-item"><a class="nav-link" href="{% url 'account:login' %}">Login</a></li>
+                    <li class="nav-item"><a class="nav-link" href="{% url 'account:register' %}">Register</a></li>
+                {% endif %}
+            </ul>
+            {% if request.user.is_authenticated %}
+                <div class="dropdown">
+                    <a class="dropdown-toggle user-dropdown" href="#" role="button" id="userDropdown"
+                       data-bs-toggle="dropdown">
+                        {% if request.user.image_profile %}
+                            <img src="{{ request.user.image_profile.url }}"
+                                 alt="User" class="user-img">
+                        {% else %}
+                            <img src="{% static 'image/default.png' %}" alt="User" class="user-img">
+                        {% endif %}
+                        <span class="ms-2">{{ request.user.username }}</span>
+                    </a>
+                    <ul class="dropdown-menu dropdown-menu-end custom-dropdown">
+                        <li><a class="dropdown-item" href="{% url 'account:profile' %}"><i class="fas fa-user me-2"></i>Profile</a>
+                        </li>
+                        <li>
+                            <hr class="dropdown-divider">
+                        </li>
+                        <li>
+                            <form action="{% url 'account:logout' %}" method="post">
+                                {% csrf_token %}
+                                <button type="submit" class="dropdown-item"><i class="fas fa-sign-out-alt me-2"></i>Logout
+                                </button>
+                            </form>
+                        </li>
+                    </ul>
+                </div>
+            {% endif %}
+        </div>
+    </div>
+</nav>

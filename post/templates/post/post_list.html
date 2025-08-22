@@ -1,0 +1,84 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block title %}Posts - AmirTec{% endblock %}
+
+{% block nav %}
+    {% include 'includes/navbar.html' %}
+{% endblock %}
+
+{% block content %}
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container text-center">
+            <h1 class="page-title">Latest Posts</h1>
+            <p class="page-subtitle">Discover the latest in technology and programming</p>
+        </div>
+    </section>
+
+    <!-- Posts Grid -->
+    <section class="py-5">
+        <div class="container">
+            <div class="row">
+                {% for post in page_obj %}
+                    <div class="col-lg-4 col-md-6 mb-4">
+                        <div class="post-card">
+                            <div class="post-image">
+                                {% if post.image %}
+                                    <img src="{{ post.image.url }}" alt="{{ post.title }}">
+                                {% else %}
+                                    <img src="{% static 'image/default.png' %}" alt="{{ post.title }}">
+                                {% endif %}
+                                <div class="post-overlay">
+                                    <span class="post-category">{{ post.main_topic }}</span>
+                                </div>
+                            </div>
+                            <div class="post-content">
+                                <h5 class="post-title">{{ post.title }}</h5>
+                                <p class="post-excerpt">{{ post.summary|truncatewords:20 }}</p>
+                                <div class="post-meta">
+                                    <span><i class="fas fa-calendar me-1"></i>{{ post.short_date }}</span>
+                                    <span><i class="fas fa-user me-1"></i>{{ post.author.username }}</span>
+                                </div>
+                                <a href="{{ post.get_absolute_url }}" class="btn btn-outline-primary btn-sm">Read More</a>
+                            </div>
+                        </div>
+                    </div>
+                {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            <nav aria-label="Posts pagination" class="mt-5">
+                <ul class="pagination justify-content-center custom-pagination">
+                    {% if page_obj.has_previous %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if category_slug %}&category_slug={{ category_slug }}{% endif %}" tabindex="-1">
+                                <i class="fas fa-chevron-left"></i> Previous
+                            </a>
+                        </li>
+                    {% endif %}
+                    {% for num in page_obj.paginator.page_range %}
+                        {% if num >= page_obj.number|add:"-2" and num <= page_obj.number|add:"2" %}
+                            {% if num == page_obj.number %}
+                                <li class="page-item active">
+                                    <a class="page-link" href="#">{{ num }}</a>
+                                </li>
+                            {% else %}
+                                <li class="page-item">
+                                    <a class="page-link" href="?page={{ num }}{% if category_slug %}&category_slug={{ category_slug }}{% endif %}">{{ num }}</a>
+                                </li>
+                            {% endif %}
+                        {% endif %}
+                    {% endfor %}
+                    {% if page_obj.has_next %}
+                        <li class="page-item">
+                            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if category_slug %}&category_slug={{ category_slug }}{% endif %}">
+                                Next <i class="fas fa-chevron-right"></i>
+                            </a>
+                        </li>
+                    {% endif %}
+                </ul>
+            </nav>
+        </div>
+    </section>
+
+{% endblock %}
