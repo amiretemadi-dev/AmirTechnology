@@ -1,8 +1,8 @@
 # 🖥️ AmirTech Blog  
 
-![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python)  
-![Django](https://img.shields.io/badge/Django-5.x-green?logo=django)  
-![Status](https://img.shields.io/badge/learning-in%20progress-yellow)
+![Python](https://img.shields.io/badge/Python-3.x-blue?logo=python)   ![Django](https://img.shields.io/badge/Django-5.x-green?logo=django)  ![Status](https://img.shields.io/badge/learning-in%20progress-yellow)
+
+
 
 Hey there 👋  
 This is **AmirTech**, my learning project while exploring **Django** (and later moving towards **DRF** 🚀).  
@@ -38,7 +38,7 @@ The idea is simple: a **blogging platform** about programming, technology, and o
 Clone the repository:
 
 ```bash
-git clone https://github.com/yourusername/AmirTech.git
+git clone https://github.com/amiretemadi-dev/AmirTechnology.git
 cd AmirTech
 ```
 
@@ -63,28 +63,7 @@ Now open 👉 [http://localhost:8000](http://localhost:8000)
 
 ---
 
-## 📝 Example AJAX Snippet (Like Button)
 
-```javascript
-// like.js
-$(document).on("click", ".like-btn", function () {
-    let postId = $(this).data("id");
-
-    $.ajax({
-        type: "POST",
-        url: "/like/",
-        data: {
-            "post_id": postId,
-            "csrfmiddlewaretoken": $("input[name=csrfmiddlewaretoken]").val()
-        },
-        success: function (response) {
-            $("#like-count-" + postId).text(response.likes);
-        }
-    });
-});
-```
-
----
 
 ## 🎯 Roadmap
 
